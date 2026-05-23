@@ -1,0 +1,139 @@
+version: '3.9'
+
+services:
+  # ─── PostgreSQL ──────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:15-alpine
+    container_name: techlearn-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: techlearn
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── pgAdmin ─────────────────────────────────────────────────────────────────
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: techlearn-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@techlearn.dev
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+
+  # ─── Spring Boot Backend ─────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ../../backend
+      dockerfile: Dockerfile
+    container_name: techlearn-backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/techlearn
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      JWT_SECRET: local-dev-secret-key-change-in-production-256bits
+      AI_SERVICE_URL: http://ai-service:8000
+      FRONTEND_URL: http://localhost:5173
+      PORT: 8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # ─── FastAPI AI Service ───────────────────────────────────────────────────────
+  ai-service:
+    build:
+      context: ../../ai-service
+      dockerfile: Dockerfile
+    container_name: techlearn-ai
+    restart: unless-stopped
+    environment:
+      LLM_PROVIDER: openai
+      LLM_MODEL: gpt-4o-mini
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+      VECTOR_DB: chroma
+      CHROMA_PERSIST_DIR: /data/chroma
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres:5432/techlearn
+      JWT_SECRET: local-dev-secret-key-change-in-production-256bits
+      ALLOWED_ORIGINS: '["http://localhost:5173","http://localhost:8080"]'
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma_data:/data/chroma
+      - ../../ai-service/data/courses:/app/data/courses:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 20s
+      timeout: 10s
+      retries: 5
+
+  # ─── React Frontend (dev server) ─────────────────────────────────────────────
+  frontend:
+    build:
+      context: ../../frontend
+      dockerfile: Dockerfile.dev
+    container_name: techlearn-frontend
+    restart: unless-stopped
+    environment:
+      VITE_API_BASE_URL: http://localhost:8080/api
+      VITE_AI_SERVICE_URL: http://localhost:8000
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../../frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+      - ai-service
+
+  # ─── Weaviate (optional vector DB) ───────────────────────────────────────────
+  weaviate:
+    image: semitechnologies/weaviate:1.24.0
+    container_name: techlearn-weaviate
+    restart: unless-stopped
+    profiles: ["weaviate"]  # only starts when: docker-compose --profile weaviate up
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: /var/lib/weaviate
+      DEFAULT_VECTORIZER_MODULE: none
+      ENABLE_MODULES: ''
+      CLUSTER_HOSTNAME: node1
+    ports:
+      - "8090:8080"
+    volumes:
+      - weaviate_data:/var/lib/weaviate
+
+volumes:
+  postgres_data:
+  chroma_data:
+  weaviate_data:
+
+networks:
+  default:
+    name: techlearn-network

@@ -1,0 +1,194 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Fraunces:ital,wght@0,700;1,300&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-primary: #0a0e1a;
+    --bg-secondary: #0f1525;
+    --bg-tertiary: #141c30;
+    --surface: #1a2338;
+    --surface-2: #1f2a40;
+    --border: #2a3550;
+    --border-2: #344060;
+    --text: #e8edf5;
+    --text-2: #8a97b0;
+    --text-3: #5a6880;
+    --accent: #4f8ef7;
+    --accent-2: #6366f1;
+    --accent-3: #22d3ee;
+    --green: #10b981;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --purple: #a78bfa;
+    --pink: #f472b6;
+  }
+
+  * {
+    @apply box-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-bg-primary text-white antialiased;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--border-2);
+  }
+}
+
+@layer components {
+  /* Code blocks in markdown */
+  .prose pre {
+    @apply bg-bg-primary border border-border rounded-xl p-4 overflow-x-auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .prose code {
+    @apply bg-surface text-accent px-1.5 py-0.5 rounded text-xs;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .prose pre code {
+    @apply bg-transparent text-inherit px-0 py-0 rounded-none;
+  }
+
+  .prose h1, .prose h2, .prose h3 {
+    @apply text-white font-semibold;
+  }
+
+  .prose h2 {
+    @apply text-xl mt-8 mb-4 pb-2 border-b border-border;
+  }
+
+  .prose h3 {
+    @apply text-base mt-6 mb-3;
+  }
+
+  .prose p {
+    @apply text-gray-300 leading-relaxed mb-4;
+  }
+
+  .prose ul, .prose ol {
+    @apply text-gray-300 space-y-1.5 mb-4;
+  }
+
+  .prose li {
+    @apply leading-relaxed;
+  }
+
+  .prose strong {
+    @apply text-white font-semibold;
+  }
+
+  .prose table {
+    @apply w-full border-collapse mb-4;
+  }
+
+  .prose th {
+    @apply bg-surface text-left px-3 py-2 text-sm font-semibold border border-border;
+  }
+
+  .prose td {
+    @apply px-3 py-2 text-sm text-gray-300 border border-border;
+  }
+
+  .prose blockquote {
+    @apply border-l-4 border-accent pl-4 text-gray-400 italic;
+  }
+
+  /* Note cards */
+  .note-card {
+    position: relative;
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  .note-card:hover {
+    transform: translateY(-2px) rotate(0.5deg);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+
+  .note-tape {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 16px;
+    border-radius: 2px;
+    opacity: 0.8;
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    background: linear-gradient(135deg, #4f8ef7, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Glass card */
+  .glass-card {
+    background: rgba(26, 35, 56, 0.8);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(42, 53, 80, 0.6);
+    border-radius: 12px;
+  }
+}
+
+@layer utilities {
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .font-display {
+    font-family: 'Fraunces', serif;
+  }
+
+  .text-accent { color: var(--accent); }
+  .border-accent { border-color: var(--accent); }
+  .bg-accent { background-color: var(--accent); }
+
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.25s ease-in;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+}
