@@ -30,10 +30,10 @@ public class UserProgress {
         joinColumns = @JoinColumn(name = "progress_id"))
     @Column(name = "lesson_id")
     @Builder.Default
-    private Set<String> completedLessons = new HashSet<>();
+    private Set<UUID> completedLessons = new HashSet<>();
 
     @Column(name = "current_lesson_id")
-    private String currentLessonId;
+    private UUID currentLessonId;
 
     @Column(name = "progress_percent")
     @Builder.Default
@@ -51,7 +51,7 @@ public class UserProgress {
     @Builder.Default
     private LocalDateTime lastActivityAt = LocalDateTime.now();
 
-    public void completeLesson(String lessonId, int totalLessons, int xpReward) {
+    public void completeLesson(UUID lessonId, int totalLessons, int xpReward) {
         this.completedLessons.add(lessonId);
         this.progressPercent = (int) ((completedLessons.size() * 100.0) / totalLessons);
         this.xpEarned += xpReward;

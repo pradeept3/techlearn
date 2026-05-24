@@ -5,9 +5,8 @@ import { ChevronLeft, ChevronRight, CheckCircle, BookOpen, Code2, HelpCircle, Lo
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { coursesApi, progressApi } from '@/api/client'
-import { CodeEditor } from '@/components/ui/CodeEditor'
-import { useChatStore } from '@/store/uiStore'
-import { useUIStore } from '@/store/uiStore'
+import { CodeEditor } from '@/components/chat/CodeEditor'
+import { useChatStore, useUIStore } from '@/store/uiStore'
 import toast from 'react-hot-toast'
 
 type Tab = 'lesson' | 'code' | 'quiz'

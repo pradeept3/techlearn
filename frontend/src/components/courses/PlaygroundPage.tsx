@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { CodeEditor } from '@/components/ui/CodeEditor'
+import { CodeEditor } from '@/components/chat/CodeEditor'
 import { BookOpen } from 'lucide-react'
 
 type Language = 'python' | 'sql' | 'java' | 'javascript' | 'bash'
@@ -34,7 +34,7 @@ const STARTER_CODE: Record<Language, { code: string; output: string }> = {
     output: 'Unique sorted squares > 4: [9, 16, 25, 36, 81]\nUser: {"id":42,"name":"Alice","role":"admin"}',
   },
   bash: {
-    code: `#!/bin/bash\n# Bash Playground 🖥️\n# Simulate a deployment script\n\necho "=== TechLearn Deploy Script ==="\necho ""\n\n# Simulate build steps\nsteps=("Installing dependencies" "Running tests" "Building Docker image" "Pushing to registry" "Deploying to ECS")\n\nfor step in "${steps[@]}"; do\n    echo -n "⏳ $step..."\n    sleep 0.1  # simulate work\n    echo " ✓"\ndone\n\necho ""\necho "✅ Deployment complete!"\necho "🌐 App running at: https://techlearn.yourdomain.com"`,
+    code: `#!/bin/bash\n# Bash Playground 🖥️\n# Simulate a deployment script\n\necho "=== TechLearn Deploy Script ==="\necho ""\n\n# Simulate build steps\nsteps=("Installing dependencies" "Running tests" "Building Docker image" "Pushing to registry" "Deploying to ECS")\n\nfor step in "\${steps[@]}"; do\n    echo -n "⏳ $step..."\n    sleep 0.1  # simulate work\n    echo " ✓"\ndone\n\necho ""\necho "✅ Deployment complete!"\necho "🌐 App running at: https://techlearn.yourdomain.com"`,
     output: '=== TechLearn Deploy Script ===\n\n⏳ Installing dependencies... ✓\n⏳ Running tests... ✓\n⏳ Building Docker image... ✓\n⏳ Pushing to registry... ✓\n⏳ Deploying to ECS... ✓\n\n✅ Deployment complete!\n🌐 App running at: https://techlearn.yourdomain.com',
   },
 }

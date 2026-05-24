@@ -49,7 +49,7 @@ public class ProgressService {
     }
 
     @CacheEvict(value = "leaderboard", allEntries = true)
-    public Map<String, Object> completeLesson(String email, String lessonId) {
+    public Map<String, Object> completeLesson(String email, UUID lessonId) {
         var user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 

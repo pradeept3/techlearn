@@ -7,7 +7,9 @@ import com.techlearn.model.User;
 import com.techlearn.repository.UserRepository;
 import com.techlearn.security.JwtService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 @Transactional
 public class AuthService {
 
@@ -26,7 +29,7 @@ public class AuthService {
 
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.email())) {
-            throw new IllegalArgumentException("Email already registered");
+            throw new IllegalArgumentException("Email already registered: " + request.email());
         }
 
         var user = User.builder()
@@ -36,52 +39,46 @@ public class AuthService {
             .build();
 
         user = userRepository.save(user);
+        log.info("Registered new user: {}", user.getEmail());
 
-        var token = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(user);
-        user.setRefreshToken(refreshToken);
-        userRepository.save(user);
-
-        return buildAuthResponse(user, token, refreshToken);
+        return issueTokens(user);
     }
 
     public AuthResponse login(AuthRequest request) {
-        authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(request.email(), request.password())
-        );
+        try {
+            authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.email(), request.password())
+            );
+        } catch (BadCredentialsException e) {
+            throw new BadCredentialsException("Invalid email or password");
+        }
 
         var user = userRepository.findByEmail(request.email())
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        var token = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(user);
-        user.setRefreshToken(refreshToken);
-        userRepository.save(user);
-
-        return buildAuthResponse(user, token, refreshToken);
+        log.info("User logged in: {}", user.getEmail());
+        return issueTokens(user);
     }
 
     public AuthResponse refreshToken(String refreshToken) {
+        if (refreshToken == null || refreshToken.isBlank()) {
+            throw new IllegalArgumentException("Refresh token is required");
+        }
         var email = jwtService.extractUsername(refreshToken);
-        var user = userRepository.findByEmail(email)
+        var user  = userRepository.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         if (!jwtService.isTokenValid(refreshToken, user)) {
-            throw new IllegalArgumentException("Invalid refresh token");
+            throw new IllegalArgumentException("Invalid or expired refresh token");
         }
-
-        var newToken = jwtService.generateToken(user);
-        var newRefresh = jwtService.generateRefreshToken(user);
-        user.setRefreshToken(newRefresh);
-        userRepository.save(user);
-
-        return buildAuthResponse(user, newToken, newRefresh);
+        return issueTokens(user);
     }
 
     public void logout(String email) {
         userRepository.findByEmail(email).ifPresent(user -> {
             user.setRefreshToken(null);
             userRepository.save(user);
+            log.info("User logged out: {}", email);
         });
     }
 
@@ -91,7 +88,13 @@ public class AuthService {
         return toUserDto(user);
     }
 
-    private AuthResponse buildAuthResponse(User user, String token, String refreshToken) {
+    // ── Private helpers ────────────────────────────────────────────────────────
+
+    private AuthResponse issueTokens(User user) {
+        var token        = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
+        user.setRefreshToken(refreshToken);
+        userRepository.save(user);
         return AuthResponse.builder()
             .token(token)
             .refreshToken(refreshToken)

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping
@@ -47,7 +48,7 @@ public class ProgressController {
     public ResponseEntity<ApiResponse<Map<String, Object>>> completeLesson(
             @PathVariable String lessonId,
             @AuthenticationPrincipal UserDetails user) {
-        var result = progressService.completeLesson(user.getUsername(), lessonId);
+        var result = progressService.completeLesson(user.getUsername(), UUID.fromString(lessonId));
         return ResponseEntity.ok(ApiResponse.ok(result, "Lesson completed! 🎉"));
     }
 
