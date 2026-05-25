@@ -1,8 +1,13 @@
 package com.techlearn.dto;
 
+import lombok.*;
 import java.util.List;
 
-public record QuizDto(
-    List<QuestionDto> questions,
-    int passingScore
-) {}
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class QuizDto {
+    private List<QuestionDto> questions;
+    private int passingScore;
+}
