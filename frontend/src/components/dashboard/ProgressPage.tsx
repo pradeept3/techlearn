@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { progressApi } from '@/api/client'
 import { useAuthStore } from '@/store/authStore'
-import { Trophy, Flame, Zap, BookOpen, Target, Medal } from 'lucide-react'
+import { Trophy, Flame, Zap, BookOpen, Target } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
 
 const TRACK_COLORS: Record<string, string> = {

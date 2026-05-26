@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Clock, Star, Github, ExternalLink } from 'lucide-react'
+import { Clock, Github, ExternalLink } from 'lucide-react'
 import { projectsApi } from '@/api/client'
 
 const STATIC_PROJECTS = [

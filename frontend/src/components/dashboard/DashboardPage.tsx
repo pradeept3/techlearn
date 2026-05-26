@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
-import { Rocket, Terminal, Flame, Trophy, BookOpen, Code2, BarChart3, Package } from 'lucide-react'
+import { Rocket, Terminal, Flame, BookOpen, Code2, BarChart3, Package } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
-import { progressApi, coursesApi } from '@/api/client'
+import { coursesApi } from '@/api/client'
 import type { Track } from '@/types'
 
 export function DashboardPage() {
@@ -12,11 +12,6 @@ export function DashboardPage() {
   const { data: tracksData } = useQuery({
     queryKey: ['tracks'],
     queryFn: () => coursesApi.getTracks(),
-  })
-
-  const { data: progressData } = useQuery({
-    queryKey: ['progress'],
-    queryFn: () => progressApi.getUserProgress(),
   })
 
   const tracks: Track[] = tracksData?.data?.data || STATIC_TRACKS
@@ -42,6 +37,25 @@ export function DashboardPage() {
           Pick up where you left off, explore a new track, or ask Aria to explain anything.
           Your AI tutor is always ready.
         </p>
+
+        {user?.role === 'admin' && (
+          <div className="mb-6 rounded-3xl border border-accent/20 bg-surface-2 p-5 shadow-sm">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-[0.24em] text-accent">Admin Console</p>
+                <h2 className="mt-2 text-xl font-semibold text-white">Admin controls are available</h2>
+                <p className="mt-2 text-gray-400">Create and manage tracks, lessons, videos, and technologies from the admin dashboard.</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => navigate('/admin')}
+                className="inline-flex items-center justify-center rounded-full bg-accent px-5 py-3 text-sm font-semibold text-black transition hover:bg-accent-2"
+              >
+                Open Admin Dashboard
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="flex gap-3 flex-wrap">
           <button

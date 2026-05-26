@@ -111,6 +111,20 @@ export const notesApi = {
   deleteNote: (id: string) => apiClient.delete(`/notes/${id}`),
 }
 
+// ─── Admin API ───────────────────────────────────────────────────────────────
+export const adminApi = {
+  createTrack: (track: any) => apiClient.post('/admin/tracks', track),
+  createLesson: (trackId: string, lesson: any) => apiClient.post(`/admin/tracks/${trackId}/lessons`, lesson),
+  addVideoToLesson: (trackId: string, lessonId: string, video: any) =>
+    apiClient.post(`/admin/tracks/${trackId}/lessons/${lessonId}/videos`, video),
+  createTechnology: (technology: any) => apiClient.post('/admin/technologies', technology),
+}
+
+// ─── Technology API ─────────────────────────────────────────────────────────
+export const technologyApi = {
+  getTechnologies: () => apiClient.get('/technologies'),
+}
+
 // ─── AI Chat API (FastAPI) ────────────────────────────────────────────────────
 export const chatApi = {
   sendMessage: (sessionId: string, message: string, context?: string) =>

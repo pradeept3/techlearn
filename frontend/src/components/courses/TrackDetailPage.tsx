@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { CheckCircle, Circle, PlayCircle, Lock, Clock, ChevronRight, BookOpen } from 'lucide-react'
+import { CheckCircle, Circle, PlayCircle, Clock, ChevronRight, BookOpen } from 'lucide-react'
 import { coursesApi } from '@/api/client'
 import { CodeEditor } from '@/components/chat/CodeEditor'
 import type { LessonSummaryDto } from '@/types'

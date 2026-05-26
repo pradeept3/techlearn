@@ -241,7 +241,7 @@ function MessageBubble({ message }: { message: ChatMessage }) {
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
-                code({ className, children }) {
+                code({ children }) {
                   return (
                     <code className="bg-bg-primary text-accent px-1 py-0.5 rounded text-xs font-mono">
                       {children}

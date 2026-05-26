@@ -14,6 +14,7 @@ import { ProjectsPage } from '@/components/projects/ProjectsPage'
 import { CaseStudiesPage } from '@/components/courses/CaseStudiesPage'
 import { NotesPage } from '@/components/notes/NotesPage'
 import { ProgressPage } from '@/components/dashboard/ProgressPage'
+import { AdminPage } from '@/components/admin/AdminPage'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -62,6 +63,7 @@ export default function App() {
             <Route path="tracks" element={<TracksPage />} />
             <Route path="tracks/:trackId" element={<TrackDetailPage />} />
             <Route path="tracks/:trackId/lessons/:lessonId" element={<LessonPage />} />
+            <Route path="admin" element={<AdminPage />} />
             <Route path="playground" element={<PlaygroundPage />} />
             <Route path="projects" element={<ProjectsPage />} />
             <Route path="case-studies" element={<CaseStudiesPage />} />

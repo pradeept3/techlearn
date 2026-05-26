@@ -3,26 +3,21 @@ import { useNavigate } from 'react-router-dom'
 import { Search, Bell, Menu, Flame, X } from 'lucide-react'
 import { useUIStore } from '@/store/uiStore'
 import { useAuthStore } from '@/store/authStore'
-import { coursesApi } from '@/api/client'
 
 export function Topbar() {
   const { setSidebarOpen, sidebarOpen, setSearchQuery } = useUIStore()
   const user = useAuthStore((s) => s.user)
   const [query, setQuery] = useState('')
-  const [searching, setSearching] = useState(false)
   const navigate = useNavigate()
 
   const handleSearch = async (val: string) => {
     setQuery(val)
     setSearchQuery(val)
-    if (val.length > 2) setSearching(true)
-    else setSearching(false)
   }
 
   const clearSearch = () => {
     setQuery('')
     setSearchQuery('')
-    setSearching(false)
   }
 
   return (

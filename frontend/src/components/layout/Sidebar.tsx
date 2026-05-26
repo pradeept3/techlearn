@@ -5,8 +5,8 @@ import { authApi } from '@/api/client'
 import toast from 'react-hot-toast'
 import {
   Home, Grid, Terminal, Package, BookOpen, FileText,
-  Trophy, Settings, Brain, Database, Cloud, Cpu,
-  MessageSquare, ChevronLeft, Flame, Sparkles, BarChart2, Coffee
+  Trophy, Settings, Brain, Database, Cloud,
+  MessageSquare, ChevronLeft, Flame, Sparkles, BarChart2, Coffee, Shield
 } from 'lucide-react'
 
 const mainNav = [
@@ -105,6 +105,12 @@ export function Sidebar() {
             <SidebarLink key={item.to} {...item} />
           ))}
         </NavSection>
+
+        {user?.role === 'admin' && (
+          <NavSection label="Admin">
+            <SidebarLink to="/admin" icon={Shield} label="Admin Dashboard" />
+          </NavSection>
+        )}
       </nav>
 
       {/* AI Tutor button */}

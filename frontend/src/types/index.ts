@@ -96,6 +96,18 @@ export interface QuizQuestion {
   explanation: string
 }
 
+export interface LessonSummaryDto {
+  id: string
+  trackId: TrackId
+  title: string
+  slug: string
+  order: number
+  type: 'video' | 'text' | 'quiz' | 'project'
+  durationMinutes: number
+  completed?: boolean
+  isPublished?: boolean
+}
+
 // ─── Progress ─────────────────────────────────────────────────────────────────
 export interface UserProgress {
   userId: string

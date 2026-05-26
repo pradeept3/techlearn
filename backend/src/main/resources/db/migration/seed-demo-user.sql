@@ -22,5 +22,27 @@ ON CONFLICT (email) DO UPDATE
         level      = EXCLUDED.level,
         is_active  = true;
 
+INSERT INTO users (id, name, email, password, role, xp, streak, level, is_active, created_at)
+VALUES (
+    gen_random_uuid(),
+    'Admin User',
+    'admin@techlearn.dev',
+    '$2b$12$McKTFaN4cti4SdKIIgZaj.A7vMZuynEonQlCla82S9jl1ww9Nx8aG',
+    'ADMIN',
+    0,
+    0,
+    1,
+    true,
+    NOW()
+)
+ON CONFLICT (email) DO UPDATE
+    SET password   = EXCLUDED.password,
+        name       = EXCLUDED.name,
+        role       = EXCLUDED.role,
+        xp         = EXCLUDED.xp,
+        streak     = EXCLUDED.streak,
+        level      = EXCLUDED.level,
+        is_active  = true;
+
 -- Verify
-SELECT id, name, email, role, xp, streak FROM users WHERE email = 'demo@techlearn.dev';
+SELECT id, name, email, role, xp, streak FROM users WHERE email IN ('demo@techlearn.dev', 'admin@techlearn.dev');

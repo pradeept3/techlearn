@@ -1,6 +1,5 @@
 import { create } from 'zustand'
 import type { ChatMessage } from '@/types'
-import { nanoid } from 'nanoid' // tiny id generator, add to package.json
 
 interface UIStore {
   sidebarOpen: boolean
